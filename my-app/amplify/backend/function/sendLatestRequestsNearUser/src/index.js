@@ -4,6 +4,7 @@ const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
 
 const helpRequestIndexName = "helprequest";
 const userIndexName = "user";
+const domain = "https://search-amplify-opense-14back7ydf2t8-yo5fr22z6zd2j3rze4ymmcwg74.us-east-1.es.amazonaws.com";
 
 // Функция для расчета расстояния между двумя точками (формула гаверсинуса)
 function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -100,20 +101,76 @@ function groupRequestsByLocation(requests, maxDistance) {
     }
 
     if (!hasOverlap) {
-      groups.push(newGroup);
-      console.log(`New group created with center at ${JSON.stringify(geoCenter)} and radius ${radius} miles`);
-    } else {
-      console.log(`Group with center at ${JSON.stringify(geoCenter)} skipped due to overlap`);
-    }
+        groups.push(newGroup);
+      } else {
+        console.log(`Group with center at ${JSON.stringify(geoCenter)} skipped due to overlap`);
+        // Удаляем запросы из множества used
+        currentGroup.forEach(req => {
+          const index = requests.indexOf(req);
+          if (index !== -1) used.delete(index);
+        });
+      }
   }
 
   return groups;
 }
 
-exports.handler = async (event) => {
+async function getUsersInArea(client, groupCenter, radius) {
   try {
-    const domain = "https://search-amplify-opense-14back7ydf2t8-yo5fr22z6zd2j3rze4ymmcwg74.us-east-1.es.amazonaws.com";
+    const response = await client.search({
+      index: userIndexName,
+      body: {
+        query: { match_all: {} },
+        _source: ["id", "name", "location", "city", "country", "emailNotifications"],
+        size: 1000
+      },
+    });
 
+    if (!response.body.hits || !response.body.hits.hits) {
+      console.log('No users found');
+      return [];
+    }
+
+    const users = response.body.hits.hits.map(hit => hit._source);
+    const usersInArea = users.filter(user => {
+      if (!user.location) {
+        // console.warn(`User ${user.id} has no location data`);
+        return false;
+      }
+
+      if (!user.emailNotifications?.newsNotification) {
+        // console.warn(`${user.name} doesn't want to receive emails`);
+        return false;
+      }
+      
+      const distance = calculateDistance(
+        groupCenter.lat,
+        groupCenter.lon,
+        user.location.lat,
+        user.location.lon
+      );
+      const isInArea = distance <= radius;
+      if (isInArea) {
+        // console.log(`User ${user.name} (${user.id}) is within ${distance.toFixed(2)} miles of group center`);
+      }
+
+      return isInArea;
+    });
+
+    return usersInArea;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
+}
+
+exports.handler = async (event) => {
+  const startTime = Date.now();
+  let totalRequests = 0;
+  let totalUsers = 0;
+  let totalGroups = 0;
+
+  try {
     const client = new Client({
       ...AwsSigv4Signer({
         region: "us-east-1",
@@ -126,34 +183,55 @@ exports.handler = async (event) => {
       node: domain,
     });
 
-    // Запрос к OpenSearch с фильтрацией по полям и сортировкой по createdAt
     const response = await client.search({
       index: helpRequestIndexName,
       body: {
         query: {
           range: {
             createdAt: {
-              gte: "now-30d/d", // Фильтр по последним 30 дням
+              gte: "now-30d/d",
               lte: "now/d"
             }
           }
         },
-        _source: ["id", "title", "location", "createdAt"], // Получаем только необходимые поля
-        size: 1000, // Ограничение на количество записей
-        sort: [{ "createdAt": "desc" }] // Сортировка по дате создания
+        _source: ["id", "title", "location", "createdAt"],
+        size: 10000,
+        sort: [{ "createdAt": "desc" }]
       },
     });
 
     if (response.body.hits && response.body.hits.hits) {
       const requests = response.body.hits.hits.map((hit) => hit._source);
+      totalRequests = requests.length;
       const groupedRequests = groupRequestsByLocation(requests, 40);
-      console.log('Total groups created:', groupedRequests.length);
+      totalGroups = groupedRequests.length;
+      console.log('Total groups created:', groupedRequests.length);      
+
+      // Add users to each group
+      for (const group of groupedRequests) {
+        const usersNear = await getUsersInArea(client, group.geoCenter, group.radius);
+        group.usersNear = usersNear;
+        totalUsers += usersNear.length;
+        console.log(`Added ${usersNear.length} users to group with center at ${JSON.stringify(group.geoCenter)}`);
+      }
+
       groupedRequests.forEach((group, index) => {
         console.log(`Group ${index + 1}:`);
         console.log(`- Center: ${JSON.stringify(group.geoCenter)}`);
         console.log(`- Radius: ${group.radius} miles`);
         console.log(`- Requests: ${group.requestsList.length}`);
+        console.log(`- Count of the Users near and wanting to receive emails: ${group.usersNear.length}`);
       });
+
+      // Log group statistics
+      const totalGroupedRequests = groupedRequests.reduce((sum, group) => sum + group.requestsList.length, 0);
+      const averageRequestsPerGroup = totalGroupedRequests / groupedRequests.length;
+      console.log('Total requests in all groups:', totalGroupedRequests);
+      console.log('Average requests per group:', averageRequestsPerGroup.toFixed(2));
+
+      const executionTime = Date.now() - startTime;
+      console.log(`Execution completed in ${executionTime}ms`);
+      console.log(`Summary: Processed ${totalRequests} requests, created ${totalGroups} groups, found ${totalUsers} nearby users`);
 
       return {
         statusCode: 200,
@@ -162,11 +240,20 @@ exports.handler = async (event) => {
           "Access-Control-Allow-Headers": "*"
         },
         body: JSON.stringify({
-          requestGroups: groupedRequests,
-          message: "Help requests successfully retrieved and grouped"
+          requestGroups: groupedRequests.length,
+          message: "Help requests successfully retrieved and grouped with nearby users",
+          statistics: {
+            executionTime: `${executionTime}ms`,
+            totalRequests,
+            totalGroups,
+            totalUsers
+          }
         }),
       };
     } else {
+      const executionTime = Date.now() - startTime;
+      console.log(`Execution completed in ${executionTime}ms with no requests found`);
+
       return {
         statusCode: 200,
         headers: {
@@ -175,12 +262,20 @@ exports.handler = async (event) => {
         },
         body: JSON.stringify({
           requestGroups: [],
-          message: "No help requests found"
+          message: "No help requests found",
+          statistics: {
+            executionTime: `${executionTime}ms`,
+            totalRequests: 0,
+            totalGroups: 0,
+            totalUsers: 0
+          }
         }),
       };
     }
   } catch (error) {
+    const executionTime = Date.now() - startTime;
     console.error("Error retrieving help requests:", error);
+    console.log(`Execution failed after ${executionTime}ms`);
 
     return {
       statusCode: 500,
@@ -188,7 +283,15 @@ exports.handler = async (event) => {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "*"
       },
-      body: JSON.stringify({ error: "Error retrieving data from OpenSearch" }),
+      body: JSON.stringify({
+        error: "Error retrieving data from OpenSearch",
+        statistics: {
+          executionTime: `${executionTime}ms`,
+          totalRequests,
+          totalGroups,
+          totalUsers
+        }
+      }),
     };
   }
 };

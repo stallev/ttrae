@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "api": {
+      "mytestapp1": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

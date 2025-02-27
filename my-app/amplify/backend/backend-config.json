@@ -22,6 +22,22 @@
     }
   },
   "function": {
+    "clearUsersAndHelpRequestsTables": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "mytestapp1"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "getPostsList": {
       "build": true,
       "dependsOn": [
@@ -45,6 +61,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_clearUsersAndHelpRequestsTables_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "clearUsersAndHelpRequestsTables"
+        }
+      ]
+    },
+    "AMPLIFY_function_clearUsersAndHelpRequestsTables_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "clearUsersAndHelpRequestsTables"
+        }
+      ]
+    },
     "AMPLIFY_function_getPostsList_deploymentBucketName": {
       "usedBy": [
         {
