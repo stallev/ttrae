@@ -14,13 +14,6 @@ export type AmplifyDependentResourcesAttributes = {
       "Name": "string",
       "Region": "string"
     },
-    "getPostsList": {
-      "Arn": "string",
-      "LambdaExecutionRole": "string",
-      "LambdaExecutionRoleArn": "string",
-      "Name": "string",
-      "Region": "string"
-    },
     "sendLatestRequestsNearUser": {
       "Arn": "string",
       "LambdaExecutionRole": "string",

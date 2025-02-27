@@ -16,17 +16,13 @@
         "mytestapp1": {}
       },
       "function": {
-        "getPostsList": {
-          "deploymentBucketName": "amplify-mytestapp1-dev-aeef3-deployment",
-          "s3Key": "amplify-builds/getPostsList-742f3162566c664b4a4d-build.zip"
-        },
         "sendLatestRequestsNearUser": {
           "deploymentBucketName": "amplify-mytestapp1-dev-aeef3-deployment",
-          "s3Key": "amplify-builds/sendLatestRequestsNearUser-656e754157416b2f5851-build.zip"
+          "s3Key": "amplify-builds/sendLatestRequestsNearUser-452b672f703962467938-build.zip"
         },
         "clearUsersAndHelpRequestsTables": {
           "deploymentBucketName": "amplify-mytestapp1-dev-aeef3-deployment",
-          "s3Key": "amplify-builds/clearUsersAndHelpRequestsTables-436d61344e6c362f2f6d-build.zip"
+          "s3Key": "amplify-builds/clearUsersAndHelpRequestsTables-616d796433416566484e-build.zip"
         }
       }
     }

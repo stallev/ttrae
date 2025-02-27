@@ -76,19 +76,16 @@ exports.handler = async (event) => {
   let deletedUsersCount = 0;
   
   try {
-    // Fetch all users
     console.log('Fetching all users...');
     const usersData = await graphqlRequest(listUsers);
     const users = usersData.listUsers.items;
     console.log(`Found ${users.length} users to delete`);
-
-    // Fetch all help requests
+    
     console.log('Fetching all help requests...');
     const helpRequestsData = await graphqlRequest(listHelpRequests);
     const helpRequests = helpRequestsData.listHelpRequests.items;
     console.log(`Found ${helpRequests.length} help requests to delete`);
-
-    // Delete all help requests first (due to potential foreign key constraints)
+    
     console.log('Deleting help requests...');
     for (const helpRequest of helpRequests) {
       await graphqlRequest(deleteHelpRequest, {
@@ -96,8 +93,7 @@ exports.handler = async (event) => {
       });
       deletedHelpRequestsCount++;
     }
-
-    // Delete all users
+    
     console.log('Deleting users...');
     for (const user of users) {
       await graphqlRequest(deleteUser, {

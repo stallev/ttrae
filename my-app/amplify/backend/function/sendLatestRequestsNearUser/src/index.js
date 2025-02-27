@@ -5,8 +5,8 @@ const { AwsSigv4Signer } = require('@opensearch-project/opensearch/aws');
 const helpRequestIndexName = "helprequest";
 const userIndexName = "user";
 const domain = "https://search-amplify-opense-14back7ydf2t8-yo5fr22z6zd2j3rze4ymmcwg74.us-east-1.es.amazonaws.com";
+const maxDistanceBetweenRequests = 40;
 
-// Функция для расчета расстояния между двумя точками (формула гаверсинуса)
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 3959; // Earth's radius in miles
   const dLat = toRad(lat2 - lat1);
@@ -22,7 +22,6 @@ function toRad(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-// Функция для группировки запросов по географическим координатам
 function calculateGroupCenter(requests) {
   const sumLat = requests.reduce((sum, req) => sum + req.location.lat, 0);
   const sumLon = requests.reduce((sum, req) => sum + req.location.lon, 0);
@@ -50,15 +49,17 @@ function doGroupsOverlap(group1, group2) {
 function groupRequestsByLocation(requests, maxDistance) {
   const groups = [];
   const used = new Set();
+  const unassignedRequests = new Set(requests.map((_, index) => index));
 
   for (let i = 0; i < requests.length; i++) {
-    if (used.has(i)) continue;
+    if (!unassignedRequests.has(i)) continue;
 
     const currentGroup = [requests[i]];
+    unassignedRequests.delete(i);
     used.add(i);
 
     for (let j = i + 1; j < requests.length; j++) {
-      if (used.has(j)) continue;
+      if (!unassignedRequests.has(j)) continue;
 
       const request1 = requests[i];
       const request2 = requests[j];
@@ -77,6 +78,7 @@ function groupRequestsByLocation(requests, maxDistance) {
 
       if (distance <= maxDistance) {
         currentGroup.push(request2);
+        unassignedRequests.delete(j);
         used.add(j);
       }
     }
@@ -84,7 +86,6 @@ function groupRequestsByLocation(requests, maxDistance) {
     const geoCenter = calculateGroupCenter(currentGroup);
     const radius = calculateGroupRadius(currentGroup, geoCenter);
 
-    // Check for overlaps with existing groups
     const newGroup = {
       geoCenter,
       radius,
@@ -92,24 +93,90 @@ function groupRequestsByLocation(requests, maxDistance) {
     };
 
     let hasOverlap = false;
+    let nearestGroup = null;
+    let minDistance = Infinity;
+
     for (const existingGroup of groups) {
       if (doGroupsOverlap(newGroup, existingGroup)) {
-        console.log(`Overlap detected between groups with centers at ${JSON.stringify(newGroup.geoCenter)} and ${JSON.stringify(existingGroup.geoCenter)}`);
         hasOverlap = true;
-        break;
+        const distance = calculateDistance(
+          newGroup.geoCenter.lat,
+          newGroup.geoCenter.lon,
+          existingGroup.geoCenter.lat,
+          existingGroup.geoCenter.lon
+        );
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestGroup = existingGroup;
+        }
       }
     }
 
     if (!hasOverlap) {
-        groups.push(newGroup);
-      } else {
-        console.log(`Group with center at ${JSON.stringify(geoCenter)} skipped due to overlap`);
-        // Удаляем запросы из множества used
-        currentGroup.forEach(req => {
-          const index = requests.indexOf(req);
-          if (index !== -1) used.delete(index);
+      groups.push(newGroup);
+    } else if (nearestGroup) {
+      currentGroup.forEach(request => {
+        const distance = calculateDistance(
+          request.location.lat,
+          request.location.lon,
+          nearestGroup.geoCenter.lat,
+          nearestGroup.geoCenter.lon
+        );
+        if (distance <= maxDistance) {
+          nearestGroup.requestsList.push(request);
+          
+          nearestGroup.geoCenter = calculateGroupCenter(nearestGroup.requestsList);
+          nearestGroup.radius = calculateGroupRadius(nearestGroup.requestsList, nearestGroup.geoCenter);
+        } else {
+          // If request is too far from nearest group, create a new group for it
+          groups.push({
+            geoCenter: { lat: request.location.lat, lon: request.location.lon },
+            radius: 0,
+            requestsList: [request]
+          });
+        }
+      });
+    }
+  }
+  
+  if (unassignedRequests.size > 0) {
+    console.log(`Assigning ${unassignedRequests.size} remaining requests to nearest groups`);
+    for (const index of unassignedRequests) {
+      const request = requests[index];
+      if (!request.location) continue;
+
+      let assigned = false;
+      let nearestGroup = null;
+      let minDistance = Infinity;
+
+      for (const group of groups) {
+        const distance = calculateDistance(
+          request.location.lat,
+          request.location.lon,
+          group.geoCenter.lat,
+          group.geoCenter.lon
+        );
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestGroup = group;
+        }
+      }
+
+      if (nearestGroup && minDistance <= maxDistance) {
+        nearestGroup.requestsList.push(request);
+        nearestGroup.geoCenter = calculateGroupCenter(nearestGroup.requestsList);
+        nearestGroup.radius = calculateGroupRadius(nearestGroup.requestsList, nearestGroup.geoCenter);
+        assigned = true;
+      }
+
+      if (!assigned) {
+        groups.push({
+          geoCenter: { lat: request.location.lat, lon: request.location.lon },
+          radius: 0,
+          requestsList: [request]
         });
       }
+    }
   }
 
   return groups;
@@ -203,9 +270,9 @@ exports.handler = async (event) => {
     if (response.body.hits && response.body.hits.hits) {
       const requests = response.body.hits.hits.map((hit) => hit._source);
       totalRequests = requests.length;
-      const groupedRequests = groupRequestsByLocation(requests, 40);
+      const groupedRequests = groupRequestsByLocation(requests, maxDistanceBetweenRequests);
       totalGroups = groupedRequests.length;
-      console.log('Total groups created:', groupedRequests.length);      
+      console.log('Total groups created:', groupedRequests.length);
 
       // Add users to each group
       for (const group of groupedRequests) {
@@ -228,6 +295,7 @@ exports.handler = async (event) => {
       const averageRequestsPerGroup = totalGroupedRequests / groupedRequests.length;
       console.log('Total requests in all groups:', totalGroupedRequests);
       console.log('Average requests per group:', averageRequestsPerGroup.toFixed(2));
+      console.log('Maximum possible group radius:', maxDistanceBetweenRequests);
 
       const executionTime = Date.now() - startTime;
       console.log(`Execution completed in ${executionTime}ms`);

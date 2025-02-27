@@ -14,7 +14,6 @@ Amplify.configure({
 
 const client = generateClient();
 
-// Predefined userIDs array
 const usersIDs = [
   '9e001621-3907-4068-8538-1286cd3e7169',
   '95ff4fa8-acf8-4d56-b817-810a3c8d4210',
@@ -63,7 +62,6 @@ const usersIDs = [
 const helpRequestsCount = 100000;
 const firstHelpRequestsOwners = 28;
 
-// City coordinates boundaries (approximate)
 const cities = {
   Fresno: {
     lat: { min: 36.6915, max: 36.8228 },
