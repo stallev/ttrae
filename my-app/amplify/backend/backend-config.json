@@ -4,7 +4,11 @@
       "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
           "defaultAuthentication": {
             "apiKeyConfig": {
               "apiKeyExpirationDays": 7
@@ -33,6 +37,11 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "sendLatestRequestsNearUser": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -49,6 +58,22 @@
         {
           "category": "function",
           "resourceName": "getPostsList"
+        }
+      ]
+    },
+    "AMPLIFY_function_sendLatestRequestsNearUser_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "sendLatestRequestsNearUser"
+        }
+      ]
+    },
+    "AMPLIFY_function_sendLatestRequestsNearUser_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "sendLatestRequestsNearUser"
         }
       ]
     }

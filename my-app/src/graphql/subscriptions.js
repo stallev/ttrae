@@ -1,108 +1,141 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreatePost = /* GraphQL */ `
-  subscription OnCreatePost($filter: ModelSubscriptionPostFilterInput) {
-    onCreatePost(filter: $filter) {
+export const onCreateHelpRequest = /* GraphQL */ `
+  subscription OnCreateHelpRequest(
+    $filter: ModelSubscriptionHelpRequestFilterInput
+  ) {
+    onCreateHelpRequest(filter: $filter) {
       id
       title
-      body
-      photoUrl
-      category {
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       createdAt
       updatedAt
-      categoryPostsId
       __typename
     }
   }
 `;
-export const onUpdatePost = /* GraphQL */ `
-  subscription OnUpdatePost($filter: ModelSubscriptionPostFilterInput) {
-    onUpdatePost(filter: $filter) {
+export const onUpdateHelpRequest = /* GraphQL */ `
+  subscription OnUpdateHelpRequest(
+    $filter: ModelSubscriptionHelpRequestFilterInput
+  ) {
+    onUpdateHelpRequest(filter: $filter) {
       id
       title
-      body
-      photoUrl
-      category {
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       createdAt
       updatedAt
-      categoryPostsId
       __typename
     }
   }
 `;
-export const onDeletePost = /* GraphQL */ `
-  subscription OnDeletePost($filter: ModelSubscriptionPostFilterInput) {
-    onDeletePost(filter: $filter) {
+export const onDeleteHelpRequest = /* GraphQL */ `
+  subscription OnDeleteHelpRequest(
+    $filter: ModelSubscriptionHelpRequestFilterInput
+  ) {
+    onDeleteHelpRequest(filter: $filter) {
       id
       title
-      body
-      photoUrl
-      category {
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       createdAt
       updatedAt
-      categoryPostsId
       __typename
     }
   }
 `;
-export const onCreateCategory = /* GraphQL */ `
-  subscription OnCreateCategory($filter: ModelSubscriptionCategoryFilterInput) {
-    onCreateCategory(filter: $filter) {
+export const onCreateUser = /* GraphQL */ `
+  subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+    onCreateUser(filter: $filter) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const onUpdateCategory = /* GraphQL */ `
-  subscription OnUpdateCategory($filter: ModelSubscriptionCategoryFilterInput) {
-    onUpdateCategory(filter: $filter) {
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+    onUpdateUser(filter: $filter) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const onDeleteCategory = /* GraphQL */ `
-  subscription OnDeleteCategory($filter: ModelSubscriptionCategoryFilterInput) {
-    onDeleteCategory(filter: $filter) {
+export const onDeleteUser = /* GraphQL */ `
+  subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+    onDeleteUser(filter: $filter) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename

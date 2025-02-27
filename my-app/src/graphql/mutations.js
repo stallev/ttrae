@@ -1,126 +1,153 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createPost = /* GraphQL */ `
-  mutation CreatePost(
-    $input: CreatePostInput!
-    $condition: ModelPostConditionInput
+export const createHelpRequest = /* GraphQL */ `
+  mutation CreateHelpRequest(
+    $input: CreateHelpRequestInput!
+    $condition: ModelHelpRequestConditionInput
   ) {
-    createPost(input: $input, condition: $condition) {
+    createHelpRequest(input: $input, condition: $condition) {
       id
       title
-      body
-      photoUrl
-      category {
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       createdAt
       updatedAt
-      categoryPostsId
       __typename
     }
   }
 `;
-export const updatePost = /* GraphQL */ `
-  mutation UpdatePost(
-    $input: UpdatePostInput!
-    $condition: ModelPostConditionInput
+export const updateHelpRequest = /* GraphQL */ `
+  mutation UpdateHelpRequest(
+    $input: UpdateHelpRequestInput!
+    $condition: ModelHelpRequestConditionInput
   ) {
-    updatePost(input: $input, condition: $condition) {
+    updateHelpRequest(input: $input, condition: $condition) {
       id
       title
-      body
-      photoUrl
-      category {
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       createdAt
       updatedAt
-      categoryPostsId
       __typename
     }
   }
 `;
-export const deletePost = /* GraphQL */ `
-  mutation DeletePost(
-    $input: DeletePostInput!
-    $condition: ModelPostConditionInput
+export const deleteHelpRequest = /* GraphQL */ `
+  mutation DeleteHelpRequest(
+    $input: DeleteHelpRequestInput!
+    $condition: ModelHelpRequestConditionInput
   ) {
-    deletePost(input: $input, condition: $condition) {
+    deleteHelpRequest(input: $input, condition: $condition) {
       id
       title
-      body
-      photoUrl
-      category {
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       createdAt
       updatedAt
-      categoryPostsId
       __typename
     }
   }
 `;
-export const createCategory = /* GraphQL */ `
-  mutation CreateCategory(
-    $input: CreateCategoryInput!
-    $condition: ModelCategoryConditionInput
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    createCategory(input: $input, condition: $condition) {
+    createUser(input: $input, condition: $condition) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const updateCategory = /* GraphQL */ `
-  mutation UpdateCategory(
-    $input: UpdateCategoryInput!
-    $condition: ModelCategoryConditionInput
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    updateCategory(input: $input, condition: $condition) {
+    updateUser(input: $input, condition: $condition) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const deleteCategory = /* GraphQL */ `
-  mutation DeleteCategory(
-    $input: DeleteCategoryInput!
-    $condition: ModelCategoryConditionInput
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    deleteCategory(input: $input, condition: $condition) {
+    deleteUser(input: $input, condition: $condition) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename

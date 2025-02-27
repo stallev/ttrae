@@ -1,16 +1,64 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const searchPosts = /* GraphQL */ `
-  query SearchPosts(
-    $filter: SearchablePostFilterInput
-    $sort: [SearchablePostSortInput]
+export const getHelpRequest = /* GraphQL */ `
+  query GetHelpRequest($id: ID!) {
+    getHelpRequest(id: $id) {
+      id
+      title
+      address
+      location {
+        lat
+        lon
+        __typename
+      }
+      owner
+      ownerUser {
+        id
+        name
+        city
+        country
+        createdAt
+        updatedAt
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listHelpRequests = /* GraphQL */ `
+  query ListHelpRequests(
+    $filter: ModelHelpRequestFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listHelpRequests(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        title
+        address
+        owner
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const searchHelpRequests = /* GraphQL */ `
+  query SearchHelpRequests(
+    $filter: SearchableHelpRequestFilterInput
+    $sort: [SearchableHelpRequestSortInput]
     $limit: Int
     $nextToken: String
     $from: Int
-    $aggregates: [SearchablePostAggregationInput]
+    $aggregates: [SearchableHelpRequestAggregationInput]
   ) {
-    searchPosts(
+    searchHelpRequests(
       filter: $filter
       sort: $sort
       limit: $limit
@@ -21,11 +69,10 @@ export const searchPosts = /* GraphQL */ `
       items {
         id
         title
-        body
-        photoUrl
+        address
+        owner
         createdAt
         updatedAt
-        categoryPostsId
         __typename
       }
       nextToken
@@ -50,79 +97,89 @@ export const searchPosts = /* GraphQL */ `
     }
   }
 `;
-export const getPost = /* GraphQL */ `
-  query GetPost($id: ID!) {
-    getPost(id: $id) {
-      id
-      title
-      body
-      photoUrl
-      category {
-        id
-        name
-        createdAt
-        updatedAt
-        __typename
-      }
-      createdAt
-      updatedAt
-      categoryPostsId
-      __typename
-    }
-  }
-`;
-export const listPosts = /* GraphQL */ `
-  query ListPosts(
-    $filter: ModelPostFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        title
-        body
-        photoUrl
-        createdAt
-        updatedAt
-        categoryPostsId
-        __typename
-      }
-      nextToken
-      __typename
-    }
-  }
-`;
-export const getCategory = /* GraphQL */ `
-  query GetCategory($id: ID!) {
-    getCategory(id: $id) {
+export const getUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
       id
       name
-      posts {
-        nextToken
+      location {
+        lat
+        lon
         __typename
       }
+      city
+      country
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const listCategories = /* GraphQL */ `
-  query ListCategories(
-    $filter: ModelCategoryFilterInput
+export const listUsers = /* GraphQL */ `
+  query ListUsers(
+    $filter: ModelUserFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listCategories(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         name
+        city
+        country
         createdAt
         updatedAt
         __typename
       }
       nextToken
+      __typename
+    }
+  }
+`;
+export const searchUsers = /* GraphQL */ `
+  query SearchUsers(
+    $filter: SearchableUserFilterInput
+    $sort: [SearchableUserSortInput]
+    $limit: Int
+    $nextToken: String
+    $from: Int
+    $aggregates: [SearchableUserAggregationInput]
+  ) {
+    searchUsers(
+      filter: $filter
+      sort: $sort
+      limit: $limit
+      nextToken: $nextToken
+      from: $from
+      aggregates: $aggregates
+    ) {
+      items {
+        id
+        name
+        city
+        country
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      total
+      aggregateItems {
+        name
+        result {
+          ... on SearchableAggregateScalarResult {
+            value
+          }
+          ... on SearchableAggregateBucketResult {
+            buckets {
+              key
+              doc_count
+              __typename
+            }
+          }
+        }
+        __typename
+      }
       __typename
     }
   }
