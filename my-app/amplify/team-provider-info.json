@@ -22,7 +22,7 @@
         },
         "sendLatestRequestsNearUser": {
           "deploymentBucketName": "amplify-mytestapp1-dev-aeef3-deployment",
-          "s3Key": "amplify-builds/sendLatestRequestsNearUser-383132327a7763794b4a-build.zip"
+          "s3Key": "amplify-builds/sendLatestRequestsNearUser-7077543771566d454973-build.zip"
         }
       }
     }

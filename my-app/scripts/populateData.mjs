@@ -74,7 +74,10 @@ function generateUser(id) {
     name: faker.person.fullName(),
     location,
     city,
-    country: 'USA'
+    country: 'USA',
+    emailNotifications: JSON.stringify({
+      messagesNotification: faker.datatype.boolean()
+    })
   };
 }
 

@@ -30,6 +30,7 @@ type User
   location: Location
   city: String
   country: String
+  emailNotifications: AWSJSON
 }
 
 type Location {

@@ -18,6 +18,7 @@ export const getHelpRequest = /* GraphQL */ `
         name
         city
         country
+        emailNotifications
         createdAt
         updatedAt
         __typename
@@ -109,6 +110,7 @@ export const getUser = /* GraphQL */ `
       }
       city
       country
+      emailNotifications
       createdAt
       updatedAt
       __typename
@@ -127,6 +129,7 @@ export const listUsers = /* GraphQL */ `
         name
         city
         country
+        emailNotifications
         createdAt
         updatedAt
         __typename
@@ -158,6 +161,7 @@ export const searchUsers = /* GraphQL */ `
         name
         city
         country
+        emailNotifications
         createdAt
         updatedAt
         __typename

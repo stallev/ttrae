@@ -21,6 +21,7 @@ export const createHelpRequest = /* GraphQL */ `
         name
         city
         country
+        emailNotifications
         createdAt
         updatedAt
         __typename
@@ -51,6 +52,7 @@ export const updateHelpRequest = /* GraphQL */ `
         name
         city
         country
+        emailNotifications
         createdAt
         updatedAt
         __typename
@@ -81,6 +83,7 @@ export const deleteHelpRequest = /* GraphQL */ `
         name
         city
         country
+        emailNotifications
         createdAt
         updatedAt
         __typename
@@ -106,6 +109,7 @@ export const createUser = /* GraphQL */ `
       }
       city
       country
+      emailNotifications
       createdAt
       updatedAt
       __typename
@@ -127,6 +131,7 @@ export const updateUser = /* GraphQL */ `
       }
       city
       country
+      emailNotifications
       createdAt
       updatedAt
       __typename
@@ -148,6 +153,7 @@ export const deleteUser = /* GraphQL */ `
       }
       city
       country
+      emailNotifications
       createdAt
       updatedAt
       __typename
