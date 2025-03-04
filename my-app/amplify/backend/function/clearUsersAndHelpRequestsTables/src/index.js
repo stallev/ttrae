@@ -71,40 +71,37 @@ async function graphqlRequest(query, variables = {}) {
  */
 exports.handler = async (event) => {
   console.log(`EVENT: ${JSON.stringify(event)}`);
-  const startTime = Date.now();
-  let deletedHelpRequestsCount = 0;
-  let deletedUsersCount = 0;
   
   try {
+    // Fetch all users
     console.log('Fetching all users...');
     const usersData = await graphqlRequest(listUsers);
     const users = usersData.listUsers.items;
     console.log(`Found ${users.length} users to delete`);
-    
+
+    // Fetch all help requests
     console.log('Fetching all help requests...');
     const helpRequestsData = await graphqlRequest(listHelpRequests);
     const helpRequests = helpRequestsData.listHelpRequests.items;
     console.log(`Found ${helpRequests.length} help requests to delete`);
-    
+
+    // Delete all help requests first (due to potential foreign key constraints)
     console.log('Deleting help requests...');
     for (const helpRequest of helpRequests) {
       await graphqlRequest(deleteHelpRequest, {
         input: { id: helpRequest.id }
       });
-      deletedHelpRequestsCount++;
+      console.log(`Deleted help request: ${helpRequest.id}`);
     }
-    
+
+    // Delete all users
     console.log('Deleting users...');
     for (const user of users) {
       await graphqlRequest(deleteUser, {
         input: { id: user.id }
       });
-      deletedUsersCount++;
+      console.log(`Deleted user: ${user.id}`);
     }
-
-    const executionTime = Date.now() - startTime;
-    console.log(`Execution completed in ${executionTime}ms`);
-    console.log(`Successfully deleted ${deletedHelpRequestsCount} help requests and ${deletedUsersCount} users`);
 
     return {
       statusCode: 200,
@@ -114,19 +111,12 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         message: 'Successfully deleted all users and help requests',
-        // executionTime: `${executionTime}ms`,
-        // statistics: {
-        //   deletedUsers: deletedUsersCount,
-        //   deletedHelpRequests: deletedHelpRequestsCount
-        // }
+        deletedUsers: users.length,
+        deletedHelpRequests: helpRequests.length
       })
     };
   } catch (error) {
-    const executionTime = Date.now() - startTime;
     console.error('Error:', error);
-    console.log(`Execution failed after ${executionTime}ms`);
-    console.log(`Partially deleted: ${deletedHelpRequestsCount} help requests and ${deletedUsersCount} users`);
-
     return {
       statusCode: 500,
       headers: {
@@ -135,11 +125,6 @@ exports.handler = async (event) => {
       },
       body: JSON.stringify({
         message: 'Error deleting data',
-        executionTime: `${executionTime}ms`,
-        statistics: {
-          deletedUsers: deletedUsersCount,
-          deletedHelpRequests: deletedHelpRequestsCount
-        },
         error: error.message
       })
     };

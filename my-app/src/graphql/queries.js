@@ -18,11 +18,15 @@ export const getHelpRequest = /* GraphQL */ `
         name
         city
         country
+        email
         emailNotifications
         createdAt
         updatedAt
         __typename
       }
+      photos
+      description
+      status
       createdAt
       updatedAt
       __typename
@@ -41,6 +45,9 @@ export const listHelpRequests = /* GraphQL */ `
         title
         address
         owner
+        photos
+        description
+        status
         createdAt
         updatedAt
         __typename
@@ -72,6 +79,9 @@ export const searchHelpRequests = /* GraphQL */ `
         title
         address
         owner
+        photos
+        description
+        status
         createdAt
         updatedAt
         __typename
@@ -110,6 +120,7 @@ export const getUser = /* GraphQL */ `
       }
       city
       country
+      email
       emailNotifications
       createdAt
       updatedAt
@@ -129,6 +140,7 @@ export const listUsers = /* GraphQL */ `
         name
         city
         country
+        email
         emailNotifications
         createdAt
         updatedAt
@@ -161,6 +173,7 @@ export const searchUsers = /* GraphQL */ `
         name
         city
         country
+        email
         emailNotifications
         createdAt
         updatedAt

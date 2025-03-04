@@ -15,65 +15,71 @@ Amplify.configure({
 const client = generateClient();
 
 const usersIDs = [
-  '9e001621-3907-4068-8538-1286cd3e7169',
-  '95ff4fa8-acf8-4d56-b817-810a3c8d4210',
-  '70fe8bc5-6caa-4360-8747-287617c94a39',
-  '4ba07779-65cd-4bf7-89c1-1731429a5077',
-  'ededade5-4001-456e-b0c3-b514f1e7a5ee',
-  'c19c2965-7c3b-460e-8db2-99dbcdd84a78',
-  'af93d961-2fe7-4b24-97a5-c31e1b371e7e',
-  'ad1279f7-6dd0-4543-b955-d1231d052a16',
-  '839ddb67-adb3-4fdb-ba14-cd26cced899d',
-  '37111acc-4d3f-482b-aeec-b801f49dd0e8',
-  'ec6cb56b-6dee-4368-ad5f-fa5e9cd44f8b',
-  'f1515ccd-819a-4ef1-b371-88596e321921',
-  'a7013060-a953-458a-8d2c-62f708b1897e',
-  'e1e7d79c-c47c-488a-8d2c-62f708b1897e',
-  '9e001621-3907-4068-8538-1286cd3e716f',
-  '95ff4fa8-acf8-4d56-b817-810a3c8d421f',
-  '70fe8bc5-6caa-4360-8747-287617c94a3f',
-  '4ba07779-65cd-4bf7-89c1-1731429a507f',
-  'ededade5-4001-456e-b0c3-b514f1e7a5ef',
-  'c19c2965-7c3b-460e-8db2-99dbcdd84a7f',
-  'af93d961-2fe7-4b24-97a5-c31e1b371e7f',
-  'ad1279f7-6dd0-4543-b955-d1231d052a1f',
-  '839ddb67-adb3-4fdb-ba14-cd26cced899f',
-  '37111acc-4d3f-482b-aeec-b801f49dd0ef',
-  'ec6cb56b-6dee-4368-ad5f-fa5e9cd44fff',
-  'f1515ccd-819a-4ef1-b371-88596e32192f',
-  'a7013060-a953-458a-8d2c-62f708b1897f',
-  'e1e7d79c-c47c-488a-8d2c-62f708b1897f',
-  'b293d961-2fe7-4b24-97a5-c31e1b371e7f',
-  'cd1279f7-6dd0-4543-b955-d1231d052a1f',
-  '939ddb67-adb3-4fdb-ba14-cd26cced899f',
-  '47111acc-4d3f-482b-aeec-b801f49dd0ef',
-  'fc6cb56b-6dee-4368-ad5f-fa5e9cd44fff',
-  'e1515ccd-819a-4ef1-b371-88596e32192f',
-  'b7013060-a953-458a-8d2c-62f708b1897f',
-  'f1e7d79c-c47c-488a-8d2c-62f708b1897f',
-  'c293d961-2fe7-4b24-97a5-c31e1b371e7f',
-  'dd1279f7-6dd0-4543-b955-d1231d052a1f',
-  'a39ddb67-adb3-4fdb-ba14-cd26cced899f',
-  '57111acc-4d3f-482b-aeec-b801f49dd0ef',
-  'gc6cb56b-6dee-4368-ad5f-fa5e9cd44fff',
-  'h1515ccd-819a-4ef1-b371-88596e32192f'
+  {
+    id: '9e001621-3907-4068-8538-1286cd3e7169',
+    email: 'user1@example.com'
+  },
+  {
+    id: '95ff4fa8-acf8-4d56-b817-810a3c8d4210',
+    email: 'user2@example.com'
+  },
+  {
+    id: '70fe8bc5-6caa-4360-8747-287617c94a39',
+    email: 'user3@example.com'
+  },
+  {
+    id: '4ba07779-65cd-4bf7-89c1-1731429a5077',
+    email: 'user4@example.com'
+  },
+  {
+    id: 'ededade5-4001-456e-b0c3-b514f1e7a5ee',
+    email: 'user5@example.com'
+  },
+  {
+    id: 'c19c2965-7c3b-460e-8db2-99dbcdd84a78',
+    email: 'user6@example.com'
+  },
+  {
+    id: 'af93d961-2fe7-4b24-97a5-c31e1b371e7e',
+    email: 'user7@example.com'
+  },
+  {
+    id: 'ad1279f7-6dd0-4543-b955-d1231d052a16',
+    email: 'user8@example.com'
+  },
+  {
+    id: '839ddb67-adb3-4fdb-ba14-cd26cced899d',
+    email: 'user9@example.com'
+  },
+  {
+    id: '37111acc-4d3f-482b-aeec-b801f49dd0e8',
+    email: 'user10@example.com'
+  },
+  {
+    id: 'ec6cb56b-6dee-4368-ad5f-fa5e9cd44f8b',
+    email: 'user11@example.com'
+  }
 ];
 
 const helpRequestsCount = 100000;
 const firstHelpRequestsOwners = 28;
 
 const cities = {
-  Fresno: {
-    lat: { min: 36.6915, max: 36.8228 },
-    lon: { min: -119.9190, max: -119.7164 }
+  Redding: {
+    lat: { min: 40.5592, max: 40.6087 },
+    lon: { min: -122.4077, max: -122.3147 }
   },
-  LosAngeles: {
-    lat: { min: 33.7037, max: 34.3373 },
-    lon: { min: -118.6682, max: -118.1553 }
+  Eureka: {
+    lat: { min: 40.7827, max: 40.8087 },
+    lon: { min: -124.1900, max: -124.1427 }
   },
-  Sacramento: {
-    lat: { min: 38.4392, max: 38.6851 },
-    lon: { min: -121.5489, max: -121.3653 }
+  Chico: {
+    lat: { min: 39.7100, max: 39.7684 },
+    lon: { min: -121.8474, max: -121.7697 }
+  },
+  Napa: {
+    lat: { min: 38.2871, max: 38.3197 },
+    lon: { min: -122.3087, max: -122.2724 }
   },
   SanFrancisco: {
     lat: { min: 37.7079, max: 37.8199 },
@@ -83,37 +89,9 @@ const cities = {
     lat: { min: 32.7157, max: 32.8807 },
     lon: { min: -117.2821, max: -117.1076 }
   },
-  Oakland: {
-    lat: { min: 37.7249, max: 37.8847 },
-    lon: { min: -122.3426, max: -122.1512 }
-  },
   SanJose: {
     lat: { min: 37.2751, max: 37.4191 },
     lon: { min: -122.0811, max: -121.8086 }
-  },
-  Berkeley: {
-    lat: { min: 37.8508, max: 37.8975 },
-    lon: { min: -122.3157, max: -122.2288 }
-  },
-  Irvine: {
-    lat: { min: 33.6339, max: 33.7579 },
-    lon: { min: -117.8682, max: -117.7032 }
-  },
-  Bakersfield: {
-    lat: { min: 35.3529, max: 35.3989 },
-    lon: { min: -119.0729, max: -118.9729 }
-  },
-  SantaBarbara: {
-    lat: { min: 34.4208, max: 34.4458 },
-    lon: { min: -119.7426, max: -119.6922 }
-  },
-  PaloAlto: {
-    lat: { min: 37.3688, max: 37.4419 },
-    lon: { min: -122.1650, max: -122.1019 }
-  },
-  SantaCruz: {
-    lat: { min: 36.9741, max: 37.0009 },
-    lon: { min: -122.0646, max: -122.0108 }
   }
 };
 

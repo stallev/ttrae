@@ -22,7 +22,7 @@
         },
         "clearUsersAndHelpRequestsTables": {
           "deploymentBucketName": "amplify-mytestapp1-dev-aeef3-deployment",
-          "s3Key": "amplify-builds/clearUsersAndHelpRequestsTables-616d796433416566484e-build.zip"
+          "s3Key": "amplify-builds/clearUsersAndHelpRequestsTables-615876366d477a42556c-build.zip"
         }
       }
     }

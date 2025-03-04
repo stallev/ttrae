@@ -13,6 +13,9 @@ type HelpRequest
   location: Location!
   owner: ID!
   ownerUser: User! @hasOne(fields: ["owner"])
+  photos: AWSJSON
+  description: String!
+  status: HelpRequestStatus
   createdAt: AWSDateTime!
 }
 
@@ -30,6 +33,7 @@ type User
   location: Location
   city: String
   country: String
+  email: String!
   emailNotifications: AWSJSON
 }
 
@@ -42,4 +46,10 @@ type HelpRequestConnection @aws_iam {
   items: [HelpRequest]
   nextToken: String,
   total: Int
+}
+
+enum HelpRequestStatus {
+  approved
+  declined
+  completed
 }

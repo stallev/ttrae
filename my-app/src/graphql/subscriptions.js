@@ -20,11 +20,15 @@ export const onCreateHelpRequest = /* GraphQL */ `
         name
         city
         country
+        email
         emailNotifications
         createdAt
         updatedAt
         __typename
       }
+      photos
+      description
+      status
       createdAt
       updatedAt
       __typename
@@ -50,11 +54,15 @@ export const onUpdateHelpRequest = /* GraphQL */ `
         name
         city
         country
+        email
         emailNotifications
         createdAt
         updatedAt
         __typename
       }
+      photos
+      description
+      status
       createdAt
       updatedAt
       __typename
@@ -80,11 +88,15 @@ export const onDeleteHelpRequest = /* GraphQL */ `
         name
         city
         country
+        email
         emailNotifications
         createdAt
         updatedAt
         __typename
       }
+      photos
+      description
+      status
       createdAt
       updatedAt
       __typename
@@ -103,6 +115,7 @@ export const onCreateUser = /* GraphQL */ `
       }
       city
       country
+      email
       emailNotifications
       createdAt
       updatedAt
@@ -122,6 +135,7 @@ export const onUpdateUser = /* GraphQL */ `
       }
       city
       country
+      email
       emailNotifications
       createdAt
       updatedAt
@@ -141,6 +155,7 @@ export const onDeleteUser = /* GraphQL */ `
       }
       city
       country
+      email
       emailNotifications
       createdAt
       updatedAt
