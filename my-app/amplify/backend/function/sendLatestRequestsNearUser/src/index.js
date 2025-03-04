@@ -256,12 +256,12 @@ exports.handler = async (event) => {
         query: {
           range: {
             createdAt: {
-              gte: "now-30d/d",
+              gte: "now-7d/d",
               lte: "now/d"
             }
           }
         },
-        _source: ["id", "title", "location", "createdAt"],
+        _source: ["id", "title", "description", "photos", "category", "location", "createdAt"],
         size: 10000,
         sort: [{ "createdAt": "desc" }]
       },

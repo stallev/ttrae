@@ -28,6 +28,7 @@ export const onCreateHelpRequest = /* GraphQL */ `
       }
       photos
       description
+      category
       status
       createdAt
       updatedAt
@@ -62,6 +63,7 @@ export const onUpdateHelpRequest = /* GraphQL */ `
       }
       photos
       description
+      category
       status
       createdAt
       updatedAt
@@ -96,6 +98,7 @@ export const onDeleteHelpRequest = /* GraphQL */ `
       }
       photos
       description
+      category
       status
       createdAt
       updatedAt

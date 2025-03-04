@@ -15,6 +15,7 @@ type HelpRequest
   ownerUser: User! @hasOne(fields: ["owner"])
   photos: AWSJSON
   description: String!
+  category: String!
   status: HelpRequestStatus
   createdAt: AWSDateTime!
 }

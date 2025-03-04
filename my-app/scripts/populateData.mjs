@@ -1,6 +1,7 @@
 import { Amplify } from '@aws-amplify/core';
 import { generateClient } from '@aws-amplify/api';
 import { faker } from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
 import awsconfig from '../src/aws-exports.js';
 import { createUser, createHelpRequest } from '../src/graphql/mutations.js';
 
@@ -58,11 +59,71 @@ const usersIDs = [
   {
     id: 'ec6cb56b-6dee-4368-ad5f-fa5e9cd44f8b',
     email: 'user11@example.com'
+  },
+  {
+    id: 'f2a45b12-9c8d-4e7f-b123-456789abcdef',
+    email: 'user12@example.com'
+  },
+  {
+    id: 'd8e9f012-3456-7890-abcd-ef1234567890',
+    email: 'user13@example.com'
+  },
+  {
+    id: 'b7c8d9e0-f123-4567-89ab-cdef01234567',
+    email: 'user14@example.com'
+  },
+  {
+    id: 'a6b7c8d9-e0f1-2345-6789-abcdef012345',
+    email: 'user15@example.com'
+  },
+  {
+    id: '95a6b7c8-d9e0-f123-4567-89abcdef0123',
+    email: 'user16@example.com'
+  },
+  {
+    id: '8495a6b7-c8d9-e0f1-2345-6789abcdef01',
+    email: 'user17@example.com'
+  },
+  {
+    id: '73849506-b7c8-d9e0-f123-456789abcdef',
+    email: 'user18@example.com'
+  },
+  {
+    id: '62738495-06b7-c8d9-e0f1-23456789abcd',
+    email: 'user19@example.com'
+  },
+  {
+    id: '51627384-9506-b7c8-d9e0-f123456789ab',
+    email: 'user20@example.com'
+  },
+  {
+    id: '40516273-8495-06b7-c8d9-e0f123456789',
+    email: 'user21@example.com'
+  },
+  {
+    id: '30405162-7384-9506-b7c8-d9e0f1234567',
+    email: 'user22@example.com'
+  },
+  {
+    id: '20304051-6273-8495-06b7-c8d9e0f12345',
+    email: 'user23@example.com'
+  },
+  {
+    id: '10203040-5162-7384-9506-b7c8d9e0f123',
+    email: 'user24@example.com'
+  },
+  {
+    id: '01020304-0516-2738-4950-6b7c8d9e0f12',
+    email: 'user25@example.com'
+  },
+  {
+    id: '00102030-4051-6273-8495-06b7c8d9e0f1',
+    email: 'user26@example.com'
   }
 ];
 
-const helpRequestsCount = 100000;
-const firstHelpRequestsOwners = 28;
+const helpRequestsCount = 8000;
+const firstHelpRequestsOwners = 25;
 
 const cities = {
   Redding: {
@@ -95,6 +156,22 @@ const cities = {
   }
 };
 
+const helpRequestCategories = [
+  'category.Contactless.tasks',
+  'category.Help.moving',
+  'category.Handyman',
+  'category.Yard.work',
+  'category.Delivery.service',
+  'category.Grocery.shoppings',
+  'category.Furniture.assembly',
+  'category.Sports.Recreation',
+  'category.Human.Services',
+  'category.Enviromental',
+  'category.Animal',
+  'category.Culture',
+  'category.Other',
+];
+
 function getRandomFloat(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -112,31 +189,49 @@ function getRandomLocation(city) {
   };
 }
 
-function generateUser(id) {
+function generateUser(data) {
   const city = getRandomCity();
   const location = getRandomLocation(city);
 
   return {
-    id,
+    id: data.id,
     name: faker.person.fullName(),
     location,
     city,
     country: 'USA',
+    email: data.email,
     emailNotifications: JSON.stringify({
       newsNotification: faker.datatype.boolean()
     })
   };
 }
 
-function generateHelpRequest(index, ownerID) {
+function generateHelpRequest(index, owner) {
   const city = getRandomCity();
   const location = getRandomLocation(city);
+  const photosCount = Math.floor(Math.random() * 4); // 0 to 3 photos
+  const categoryIndex = Math.floor(Math.random() * helpRequestCategories.length);
+  const photos = [];
+  
+  for (let i = 0; i < photosCount; i++) {
+    photos.push({
+      region: 'us-east-1',
+      bucket: 'test-photo-bucket',
+      key: `${uuidv4()}.jpg`
+    });
+  }
+  
+  const statuses = ['approved', 'declined', 'completed'];
   
   return {
     title: `Help Request #${index + 1} in ${city}`,
+    description: faker.lorem.paragraph().slice(0, 250),
     address: `${Math.floor(Math.random() * 1000)} Sample St, ${city}, CA`,
+    category: helpRequestCategories[categoryIndex],
     location,
-    owner: ownerID,
+    owner: owner.id,
+    photos: JSON.stringify(photos),
+    status: statuses[Math.floor(Math.random() * statuses.length)],
     createdAt: new Date().toISOString()
   };
 }
@@ -144,13 +239,13 @@ function generateHelpRequest(index, ownerID) {
 async function populateUsers() {
   console.log('Starting to populate users...');
   try {
-    for (const id of usersIDs) {
-      const userData = generateUser(id);
+    for (const user of usersIDs) {
+      const userData = generateUser(user);
       const newUser = await client.graphql({
         query: createUser,
         variables: { input: userData }
       });
-      console.log(`Created user with ID: ${id}`, console.log('new user', JSON.stringify(newUser, null, 2)));
+      console.log(`Created user with ID: ${userData.id}`, JSON.stringify(newUser, null, 2));
     }
     console.log('Successfully created all users!');
   } catch (error) {
@@ -161,7 +256,7 @@ async function populateUsers() {
 
 async function populateHelpRequests() {
   console.log('Starting to populate help requests...');
-  const ownerIDs = usersIDs.slice(0, firstHelpRequestsOwners); // First 15 IDs for help request owners
+  const ownerIDs = usersIDs.slice(0, firstHelpRequestsOwners); // First firstHelpRequestsOwners IDs for help request owners
   
   try {
     for (let i = 0; i < helpRequestsCount; i++) {

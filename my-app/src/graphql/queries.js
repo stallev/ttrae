@@ -26,6 +26,7 @@ export const getHelpRequest = /* GraphQL */ `
       }
       photos
       description
+      category
       status
       createdAt
       updatedAt
@@ -47,6 +48,7 @@ export const listHelpRequests = /* GraphQL */ `
         owner
         photos
         description
+        category
         status
         createdAt
         updatedAt
@@ -81,6 +83,7 @@ export const searchHelpRequests = /* GraphQL */ `
         owner
         photos
         description
+        category
         status
         createdAt
         updatedAt
